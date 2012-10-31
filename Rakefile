@@ -76,3 +76,60 @@ if rspec_loaded
     end
   end
 end
+
+namespace :collect do
+
+  ##
+  # collect_metadata walks the Amazon AWS EC2 Metadata API and records each
+  # request and response instance as a serialized YAML string.  This method is
+  # intended to be used by Rake tasks Puppet users invoke to collect data for
+  # development and troubleshooting purposes.
+  def collect_metadata(key='/')
+    require 'timeout'
+    require 'net/http'
+    require 'uri'
+    require 'yaml'
+    date=Time.now.strftime("%F")
+    file_prefix = "ec2_meta_data#{key.gsub(/[^a-zA-Z0-9]+/, '_')}".gsub(/_+$/, '')
+
+    dir = "spec/fixtures/unit/util/ec2"
+    # Local variables
+    response = nil
+    Dir.chdir dir do
+      uri = URI("http://169.254.169.254/latest/meta-data#{key}")
+      Timeout::timeout(4) do
+        Net::HTTP.start(uri.host, uri.port) do |http|
+          request = Net::HTTP::Get.new uri.request_uri
+          response = http.request request
+
+          request_file = "#{file_prefix}_request.yaml"
+          File.open(request_file, "w+") do |fd|
+            fd.write(YAML.dump(request))
+          end
+          puts "Wrote: #{dir}/#{request_file}"
+
+          response_file = "#{file_prefix}_response.yaml"
+          File.open(response_file, "w+") do |fd|
+            fd.write(YAML.dump(response))
+          end
+          puts "Wrote: #{dir}/#{response_file}"
+        end
+      end
+    end
+    ##
+    # if the current key is a directory, decend into all of the files.  If the
+    # current key is not, we've already written it out and we're done.
+    if key.end_with? "/"
+      response.read_body.lines.each do |line|
+        # The response is relative to the current directory (key)
+        next_key = "#{key}#{line.chomp}"
+        collect_metadata(next_key)
+      end
+    end
+  end
+
+  desc "Scrape EC2 Metadata into fixtures"
+  task :ec2_metadata do
+    collect_metadata
+  end
+end
