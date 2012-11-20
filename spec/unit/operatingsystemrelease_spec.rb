@@ -1,5 +1,6 @@
 #! /usr/bin/env ruby
 
+require 'facter/util/file_read'
 require 'spec_helper'
 
 describe "Operating System Release fact" do
@@ -55,5 +56,18 @@ describe "Operating System Release fact" do
     File.expects(:read).with("/etc/alpine-release").returns("foo")
 
     Facter.fact(:operatingsystemrelease).value.should == "foo"
+  end
+
+  context "Ubuntu" do
+    let(:issue) { "Ubuntu 10.04.4 LTS \\n \\l\n\n" }
+    before :each do
+      Facter.fact(:kernel).stubs(:value).returns("Linux")
+      Facter.fact(:operatingsystem).stubs(:value).returns("Ubuntu")
+    end
+
+    it "Returns only the major and minor version (not patch version)" do
+      Facter::Util::FileRead.stubs(:read).with("/etc/issue").returns(issue)
+      Facter.fact(:operatingsystemrelease).value.should == "10.04"
+    end
   end
 end
