@@ -4,12 +4,14 @@ group :development do
   gem 'watchr'
 end
 
+group :optional do
+  gem 'json', "~> 1.7", :require => false
+end
+
 group :development, :test do
   gem 'rake'
-  gem 'facter', ">= 1.0.0", :path => File.expand_path("..", __FILE__), :require => false
   gem 'rspec', "~> 2.11.0", :require => false
   gem 'mocha', "~> 0.10.5", :require => false
-  gem 'json', "~> 1.7", :require => false
   gem 'puppetlabs_spec_helper', :require => false
 end
 
