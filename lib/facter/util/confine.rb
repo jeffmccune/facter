@@ -15,16 +15,17 @@ class Facter::Util::Confine
   # @param values [Array] One or more values to match against.
   #   They can be any type that provides a === method. Proc types will be
   #   evaluated by using the call method with the value of the fact as parameter.
-  # @param block Alternatively a block can be supplied as a check
+  # @param block Alternatively a block can be supplied as a check.  The fact
+  #   value will be passed as the argument to the block.  If the block returns
+  #   true then the fact will be enabled, otherwise it will be disabled.
   def initialize(fact = nil, *values, &block)
-    if block_given? then
-      @block = block
-    else
-      raise ArgumentError, "The fact name must be provided" unless fact
-      raise ArgumentError, "One or more values or a block must be provided" if values.empty?
-      @fact = fact
-      @values = values
+    raise ArgumentError, "The fact name must be provided" unless fact
+    if values.empty? and not block
+      raise ArgumentError, "One or more values or a block must be provided"
     end
+    @fact = fact
+    @values = values
+    @block = block
   end
 
   def to_s

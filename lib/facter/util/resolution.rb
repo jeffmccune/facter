@@ -187,7 +187,13 @@ class Facter::Util::Resolution
   end
 
   # Add a new confine to the resolution mechanism.
-  def confine(confines)
+  def confine(confines = {}, *facts, &block)
+    # FIXME: Make sure this handles all three cases dalen outlines in #410
+    if block
+      facts.each do |fact|
+        @confines.push Facter::Util::Confine.new(fact, block)
+      end
+    end
     confines.each do |fact, values|
       @confines.push Facter::Util::Confine.new(fact, *values)
     end
