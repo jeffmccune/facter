@@ -186,16 +186,37 @@ class Facter::Util::Resolution
     end
   end
 
-  # Add a new confine to the resolution mechanism.
-  def confine(confines = {}, *facts, &block)
-    # FIXME: Make sure this handles all three cases dalen outlines in #410
-    if block
-      facts.each do |fact|
-        @confines.push Facter::Util::Confine.new(fact, block)
+  ##
+  # Add a new confine to the resolution mechanism.  There are three main use
+  # cases this method supports.
+  #
+  # 1: key/value pairs passed as a hash.  `confine :operatingsystem =>
+  #    'Linux'`.  Values will be compared, using case comparison (`===`),
+  #    against the fact value identified by the key.
+  # 2: A key and a block. `confine :operatingsystem { |os| os == "Linux" }`
+  # 3: A stand alone block `confine { File.exists? '/bin/zsh' }`
+  #
+  # @param confines [String, Symbol, Hash]
+  #
+  # @param block [Proc] If provided along with a String or Symbol confines
+  # parameter, then the value of the fact identified by the confines parameter
+  # will be yielded to the block.  Otherwise, the block will be executed and
+  # the fact evaluated only if the block returns true.
+  #
+  # @api public
+  def confine(confines, &block)
+    case confines
+    when Hash
+      confines.each do |fact, values|
+        @confines.push Facter::Util::Confine.new(fact, *values)
       end
-    end
-    confines.each do |fact, values|
-      @confines.push Facter::Util::Confine.new(fact, *values)
+    else
+      if block
+        args.each do |fact|
+          @confines.push Facter::Util::Confine.new(fact, block)
+        end
+      else
+      end
     end
   end
 
