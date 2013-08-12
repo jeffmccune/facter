@@ -8,3 +8,5 @@ vendor/
 Gemfile.lock
 Gemfile.local
 .rspec
+*.swp
+*.swo
