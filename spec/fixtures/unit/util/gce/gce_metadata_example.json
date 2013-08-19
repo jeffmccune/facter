@@ -1,0 +1,69 @@
+{
+  "instance": {
+    "attributes": {
+    },
+    "description": "System to test Facter",
+    "disks": [
+      {
+        "deviceName": "facter1",
+        "index": 0,
+        "mode": "READ_WRITE",
+        "type": "PERSISTENT"
+      }
+    ],
+    "hostname": "facter1.c.jeff-fog.puppetlabs.com.internal",
+    "id": 5332037549869110855,
+    "image": "",
+    "machineType": "projects/111878206402/machineTypes/n1-highcpu-8",
+    "networkInterfaces": [
+      {
+        "accessConfigs": [
+          {
+            "externalIp": "173.255.115.92",
+            "type": "ONE_TO_ONE_NAT"
+          }
+        ],
+        "forwardedIps": [
+
+        ],
+        "ip": "10.211.244.148",
+        "network": "projects/111878206402/networks/default"
+      }
+    ],
+    "serviceAccounts": {
+      "3867bsu2.default@developer.gserviceaccount.com": {
+        "aliases": [
+          "default"
+        ],
+        "email": "3867bsu2.default@developer.gserviceaccount.com",
+        "scopes": [
+          "https://www.googleapis.com/auth/compute",
+          "https://www.googleapis.com/auth/devstorage.full_control",
+          "https://www.googleapis.com/auth/userinfo.email"
+        ]
+      },
+      "default": {
+        "aliases": [
+          "default"
+        ],
+        "email": "3867bsu2.default@developer.gserviceaccount.com",
+        "scopes": [
+          "https://www.googleapis.com/auth/compute",
+          "https://www.googleapis.com/auth/devstorage.full_control",
+          "https://www.googleapis.com/auth/userinfo.email"
+        ]
+      }
+    },
+    "tags": [
+
+    ],
+    "zone": "projects/111878206402/zones/us-central1-b"
+  },
+  "project": {
+    "attributes": {
+      "sshKeys": "jeff:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDrJnsbk1yxeYFlXGknsxa6hJsTi2onLnte8aPkZg1QHffmUn95kkYyptKhLcW8xrZzG1wIA5ceUjukJFd9KjnAj7E6uzWiX3qsXxaM1LMz7jyuqpKsJETpPj8E2LRWdE7tSLXvlMjtjTyi3FWA8rSeyOjw/nWj4DPIHBRLhViIZRefXhZZm+22IpwqjGMRHIMZmdJPsBdaSw6kdBYQ45N5qWoiuciOM982LzhDOfnqspF5+nX6DmRR6domHx/y/bjW9OThr3owlIGtjakP4IFmWUmywbTyIEFj51x1HtcqbN+4oCanDvK5PozDB7ZKEWe9AcGIgG/xwGWHUXM2rqBd jeff@maynard.jeff.lan\njeff:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDw3gSh1bdSy/hrV289NOB/tx47IndatChEG8GmXzhGaWoGSXKjBhSfvIP/PpjZWCVHzSYo4V+yt0+WRUJZKjGUzs5GCTORP1aPqCESIe9OghGp/RPvbMJYsmse5+5UtnnjYTHycweSd7vZaBjqXrS6R6tGuYE0wrbGdb+5Mjgsn3t4H/jLx1vCvHQQc2efdRVXrhZpfNKnpVnAJHA/XKA0nHwkfkgo1ZW3ipdyZNmqCIQFXvW3nOp8mBn/epBQ/G5qnJ81H1PQacB23d5rjnzL1hah2+Mq1Bk+PHYDJVqm6boiptIJX7BIRyrnMbTbapO3h7yg5P+wnHf1LTBYHsQF jeff@maynard.local"
+    },
+    "numericProjectId": 111878206402,
+    "projectId": "puppetlabs.com:jeff-fog"
+  }
+}
