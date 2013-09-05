@@ -90,13 +90,20 @@ module Facter::Util::GCE
   # this method will try to contact the metadata server.  The maximum run time
   # is the timeout times this limit, so please keep the value small.
   #
+  # @option options [String] :url ({METADATA_URL}) the url that will be used to
+  # attempt the initial connection to the metadata server.  If the URL responds
+  # then the body of the response will be passed as the first argument to the
+  # block provided.
+  #
   # @return [Boolean] the return {true} if successfula, {false} otherwise
-  def self.with_metadata_server(options = {})
+  #
+  def self.with_metadata_server(options = {}, &block)
     opts = options.dup
     opts[:timeout] ||= 100
     opts[:fact] ||= 'virtual'
     opts[:value] ||= 'gce'
     opts[:retry_limit] ||= 3
+    opts[:url] ||= METADATA_URL
     # Conversion to fractional seconds for Timeout
     timeout = opts[:timeout] / 1000.0
     raise ArgumentError, "A value is required for :fact" if opts[:fact].nil?
@@ -105,13 +112,11 @@ module Facter::Util::GCE
 
     attempts = 0
     begin
+      body = nil
       attempts = attempts + 1
       # Read the list of supported API versions
       Timeout.timeout(timeout) do
-        if body = read_uri("#{METADATA_URL}")
-          return false if !require_json
-          metadata_facts("gce", JSON.parse(body))
-        end
+        body = read_uri("#{METADATA_URL}")
       end
     rescue *CONNECTION_ERRORS => detail
       retry if attempts < opts[:retry_limit]
@@ -119,9 +124,13 @@ module Facter::Util::GCE
         "metadata server facts will be undefined. #{detail.message}"
       return false
     end
-    return true
-  end
 
+    if body
+      return block.call(body)
+    else
+      return false
+    end
+  end
   ##
   # read_uri provides a seam method to easily test the HTTP client
   # functionality of a HTTP based metadata server.
@@ -148,7 +157,11 @@ module Facter::Util::GCE
       return nil if @add_gce_facts_has_run
     end
     @add_gce_facts_has_run = true
-    with_metadata_server :timeout => 50
+    if require_json
+      with_metadata_server(:timeout => 50) do |body|
+        metadata_facts("gce", JSON.parse(body))
+      end
+    end
   end
 
   private
